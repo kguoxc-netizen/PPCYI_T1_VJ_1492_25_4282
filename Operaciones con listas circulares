@@ -1,0 +1,92 @@
+class Nodo:
+    def __init__(self, dato):
+        self.dato = dato
+        self.siguiente = None
+
+class ListaCircular:
+    def __init__(self):
+        self.primero = None
+        self.ultimo = None
+
+    def agregar(self, dato):
+        nuevo = Nodo(dato)
+        if self.primero is None:
+            self.primero = nuevo
+            self.ultimo = nuevo
+            self.ultimo.siguiente = self.primero
+        else:
+            self.ultimo.siguiente = nuevo
+            nuevo.siguiente = self.primero
+            self.ultimo = nuevo
+
+    def insertar(self, dato, posicion):
+        # CORRECCIÓN: Si la lista está vacía, usamos agregar
+        if self.primero is None:
+            self.agregar(dato)
+            return
+
+        nuevo = Nodo(dato)
+        if posicion == 0:
+            nuevo.siguiente = self.primero
+            self.ultimo.siguiente = nuevo
+            self.primero = nuevo
+        else:
+            actual = self.primero
+            # Agregamos una parada de seguridad para no entrar en bucle infinito
+            for _ in range(posicion - 1):
+                actual = actual.siguiente
+                if actual == self.ultimo: break 
+            nuevo.siguiente = actual.siguiente
+            actual.siguiente = nuevo
+            if actual == self.ultimo:
+                self.ultimo = nuevo
+
+    def buscar(self, valor):
+        if not self.primero: return False
+        actual = self.primero
+        while True:
+            if actual.dato == valor: return True
+            actual = actual.siguiente
+            if actual == self.primero: break
+        return False
+
+    def eliminar(self, valor):
+        if self.primero is None: return False
+        actual = self.primero
+        anterior = self.ultimo
+        while True:
+            if actual.dato == valor:
+                if self.primero == self.ultimo: # Caso: solo hay un nodo
+                    self.primero = None
+                    self.ultimo = None
+                elif actual == self.primero:
+                    self.primero = self.primero.siguiente
+                    self.ultimo.siguiente = self.primero
+                else:
+                    anterior.siguiente = actual.siguiente
+                    if actual == self.ultimo:
+                        self.ultimo = anterior
+                return True
+            anterior = actual
+            actual = actual.siguiente
+            if actual == self.primero: break
+        return False
+
+    def mostrar(self):
+        if not self.primero:
+            print("Lista vacía")
+            return
+        elementos = []
+        actual = self.primero
+        while True:
+            elementos.append(str(actual.dato))
+            actual = actual.siguiente
+            if actual == self.primero: break
+        print(" -> ".join(elementos) + " (vuelve al inicio)")
+
+# Ejemplo de uso:
+mi_lista = ListaCircular()
+mi_lista.agregar(10)
+mi_lista.agregar(20)
+mi_lista.insertar(15, 1)
+mi_lista.mostrar() # 10 -> 15 -> 20
