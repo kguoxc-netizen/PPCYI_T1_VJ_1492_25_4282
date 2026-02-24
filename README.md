@@ -56,3 +56,4 @@ if __name__ == "__main__":
     root = tree.getroot()
     menu(root)
 
+https://youtu.be/URVeuPvtCH4 video sobre la explicacion del codigo
